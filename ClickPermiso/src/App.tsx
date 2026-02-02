@@ -1,17 +1,16 @@
-import FormularioSolicitud from "./Componentes/FormularioSolicitud";
-import Header from "./Componentes/Header";
-import Sidebar from "./Componentes/Sidebar";
-
+import Header from './Componentes/Header';
+import Sidebar from './Componentes/Sidebar';
+import FormularioSolicitud from './Componentes/FormularioSolicitud';
 
 function App() {
   return (
-    <>
+    <div className="min-h-screen bg-gray-100">
       <Header />
-      <div className="app-container">
+      <div className="flex">
         <Sidebar />
         <FormularioSolicitud />
       </div>
-    </>
+    </div>
   );
 }
 
