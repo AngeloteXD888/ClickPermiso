@@ -1,12 +1,12 @@
 const Header = () => (
-  <>
-    <div className="flex items-center gap-3">
-      <span className="text-gray-700 font-medium">I.E.S Albarregas</span>
+  <div className="header">
+    <div className="header-title">
+      I.E.S Albarregas
     </div>
-    <div className="text-sm text-gray-600">
+    <div className="header-user">
       Hola, Prof. Borja
     </div>
-  </>
+  </div>
 );
 
-export default Header
+export default Header;
