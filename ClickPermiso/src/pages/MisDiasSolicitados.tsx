@@ -1,5 +1,5 @@
-const MisAusencias = () => {
-  const ausencias = [
+const MisDiasSolicitados = () => {
+  const solicitudes = [
     {
       id: 1,
       periodo: '14/01/2026 al 15/01/2026',
@@ -43,16 +43,16 @@ const MisAusencias = () => {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {ausencias.map((ausencia) => (
-                <tr key={ausencia.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm">{ausencia.periodo}</td>
-                  <td className="px-4 py-3 text-sm">{ausencia.estado}</td>
-                  <td className="px-4 py-3 text-sm">{ausencia.ultimaModificacion}</td>
+              {solicitudes.map((solicitud) => (
+                <tr key={solicitud.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm">{solicitud.periodo}</td>
+                  <td className="px-4 py-3 text-sm">{solicitud.estado}</td>
+                  <td className="px-4 py-3 text-sm">{solicitud.ultimaModificacion}</td>
                   <td className="px-4 py-3 text-sm">
-                    <span className="text-red-600">{ausencia.anexoV ? '✓' : '✗'}</span>
+                    <span className="text-red-600">{solicitud.anexoV ? '✓' : '✗'}</span>
                   </td>
                   <td className="px-4 py-3 text-sm">
-                    <span className="text-red-600">{ausencia.adjuntos ? '✓' : '✗'}</span>
+                    <span className="text-red-600">{solicitud.adjuntos ? '✓' : '✗'}</span>
                   </td>
                   <td className="px-4 py-3 text-sm">
                     <button className="text-blue-600 hover:underline">Justificar día</button>
@@ -63,9 +63,9 @@ const MisAusencias = () => {
           </table>
         </div>
 
-        {ausencias.length === 0 && (
+        {solicitudes.length === 0 && (
           <div className="text-center py-12 text-gray-500">
-            No hay ausencias registradas
+            No hay solicitudes registradas
           </div>
         )}
       </div>
@@ -73,4 +73,4 @@ const MisAusencias = () => {
   );
 };
 
-export default MisAusencias;
+export default MisDiasSolicitados;
