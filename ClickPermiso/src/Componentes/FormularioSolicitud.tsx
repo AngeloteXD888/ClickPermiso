@@ -1,116 +1,108 @@
 import { useState } from "react";
 
 const FormularioSolicitud = () => {
-  const [formData, setFormData] = useState({
+  // ESTADO: Guardamos todos los datos del formulario
+  const [datos, setDatos] = useState({
     fecha: '21/01/2026',
     telefono: '',
     jornada: '',
     turno: 'Diurno',
-    horasDocencia: '',
-    diasPermiso: '',
+    horas: '',
+    dias: '',
     noRetribuido: false,
     causaSobrevenida: true,
     justificacion: '',
-    archivo: null as File | null
+    archivo: null
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Guardar solicitud:', formData);
-    alert('Solicitud guardada correctamente');
+  // FUNCIÓN 1: Cambiar cualquier campo
+  const cambiarCampo = (campo, valor) => {
+    setDatos({ ...datos, [campo]: valor });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData({...formData, archivo: e.target.files[0]});
+  // FUNCIÓN 2: Guardar formulario
+  const guardar = () => {
+    // Validación simple
+    if (!datos.jornada || !datos.horas || !datos.dias) {
+      alert('⚠️ Completa los campos obligatorios');
+      return;
     }
-  };
-
-  const handleCancel = () => {
-    if (confirm('¿Estás seguro de que quieres cancelar? Se perderán los cambios.')) {
-      setFormData({
-        fecha: '21/01/2026',
-        telefono: '',
-        jornada: '',
-        turno: 'Diurno',
-        horasDocencia: '',
-        diasPermiso: '',
-        noRetribuido: false,
-        causaSobrevenida: true,
-        justificacion: '',
-        archivo: null
-      });
-    }
+    
+    console.log('✅ Datos guardados:', datos);
+    alert('✅ Solicitud enviada correctamente');
   };
 
   return (
-    <div className="flex-1 bg-gray-100 p-8">
-      <div className="bg-white rounded-lg shadow-sm p-8 max-w-4xl mx-auto">
-        {/* Header del formulario */}
-        <div className="flex justify-between items-center mb-8 pb-6 border-b-2 border-gray-200">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">📅</span>
-            <h2 className="text-2xl font-semibold text-gray-900">
-              Solicitar Día: 21 de enero de 2026
-            </h2>
-          </div>
-          <button className="text-blue-600 hover:text-blue-800 flex items-center gap-1 text-sm font-medium transition-colors">
-            ← Volver
-          </button>
+    <div className="flex-1 bg-gray-50 p-8">
+      <div className="bg-white rounded-lg shadow p-8 max-w-5xl">
+        
+        {/* ENCABEZADO */}
+        <div className="flex justify-between items-center mb-6 pb-6 border-b">
+          <h1 className="text-xl font-semibold flex items-center gap-2">
+            📅 Solicitar Día: 21 de enero de 2026
+          </h1>
+          <button className="text-blue-600 text-sm">← Volver</button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Fila 1: Fecha y Teléfono */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          
+          {/* FILA 1 */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Día Solicitado */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Día Solicitado <span className="text-red-500">*</span>
+                Día Solicitado
               </label>
               <input
                 type="text"
-                value={formData.fecha}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                value={datos.fecha}
+                className="w-full px-4 py-2 border rounded-lg bg-gray-50"
                 readOnly
               />
             </div>
+
+            {/* Teléfono */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Número de Teléfono
               </label>
               <input
                 type="tel"
-                value={formData.telefono}
-                onChange={(e) => setFormData({...formData, telefono: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Ej: 666 123 456"
+                value={datos.telefono}
+                onChange={(e) => cambiarCampo('telefono', e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
+                placeholder="612345678"
               />
             </div>
           </div>
 
-          {/* Fila 2: Jornada y Turno */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* FILA 2 */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Jornada */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Jornada
               </label>
               <select
-                value={formData.jornada}
-                onChange={(e) => setFormData({...formData, jornada: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                value={datos.jornada}
+                onChange={(e) => cambiarCampo('jornada', e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg bg-white"
               >
                 <option value="">---------</option>
                 <option value="completa">Completa</option>
                 <option value="parcial">Parcial</option>
               </select>
             </div>
+
+            {/* Turno */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Turno Solicitado
               </label>
               <select
-                value={formData.turno}
-                onChange={(e) => setFormData({...formData, turno: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                value={datos.turno}
+                onChange={(e) => cambiarCampo('turno', e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg bg-white"
               >
                 <option value="Diurno">Diurno</option>
                 <option value="Vespertino">Vespertino</option>
@@ -118,117 +110,115 @@ const FormularioSolicitud = () => {
             </div>
           </div>
 
-          {/* Fila 3: Horas y Días */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* FILA 3 */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Horas */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Núm. de horas de docencia directa y guardias afectadas
               </label>
               <input
                 type="number"
-                value={formData.horasDocencia}
-                onChange={(e) => setFormData({...formData, horasDocencia: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={datos.horas}
+                onChange={(e) => cambiarCampo('horas', e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
                 placeholder="0"
-                min="0"
               />
             </div>
+
+            {/* Días */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Núm. de días de permisos solicitados en el centro
               </label>
               <input
                 type="number"
-                value={formData.diasPermiso}
-                onChange={(e) => setFormData({...formData, diasPermiso: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={datos.dias}
+                onChange={(e) => cambiarCampo('dias', e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg"
                 placeholder="0"
-                min="0"
               />
             </div>
           </div>
 
-          {/* Checkbox: Permiso no retribuido */}
-          <div className="flex items-center gap-3 bg-blue-50 p-4 rounded-lg">
+          {/* CHECKBOX 1 */}
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              id="noRetribuido"
-              checked={formData.noRetribuido}
-              onChange={(e) => setFormData({...formData, noRetribuido: e.target.checked})}
-              className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
+              checked={datos.noRetribuido}
+              onChange={(e) => cambiarCampo('noRetribuido', e.target.checked)}
+              className="w-4 h-4"
             />
-            <label htmlFor="noRetribuido" className="text-sm text-gray-700 cursor-pointer font-medium">
+            <label className="text-sm text-gray-700">
               Estoy solicitando un día de permiso no retribuido
             </label>
           </div>
 
-          {/* Checkbox: Causa sobrevenida */}
-          <div className="flex items-center gap-3 bg-orange-50 p-4 rounded-lg">
+          {/* CHECKBOX 2 */}
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              id="causaSobrevenida"
-              checked={formData.causaSobrevenida}
-              onChange={(e) => setFormData({...formData, causaSobrevenida: e.target.checked})}
-              className="w-5 h-5 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
+              checked={datos.causaSobrevenida}
+              onChange={(e) => cambiarCampo('causaSobrevenida', e.target.checked)}
+              className="w-4 h-4"
             />
-            <label htmlFor="causaSobrevenida" className="text-sm text-gray-700 cursor-pointer font-medium">
+            <label className="text-sm text-gray-700">
               ¿Causa sobrevenida?
             </label>
           </div>
 
-          {/* Justificación */}
-          {formData.causaSobrevenida && (
+          {/* JUSTIFICACIÓN */}
+          {datos.causaSobrevenida && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Justificación de la causa sobrevenida
               </label>
               <textarea
-                value={formData.justificacion}
-                onChange={(e) => setFormData({...formData, justificacion: e.target.value})}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y min-h-[120px]"
-                placeholder="Describe aquí la justificación de la causa sobrevenida..."
+                value={datos.justificacion}
+                onChange={(e) => cambiarCampo('justificacion', e.target.value)}
+                className="w-full px-4 py-2 border rounded-lg min-h-[120px]"
+                placeholder="Escribe aquí..."
               />
             </div>
           )}
 
-          {/* Documento PDF */}
+          {/* ARCHIVO PDF */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Documento Justificativo en PDF
             </label>
             <div className="flex items-center gap-3">
-              <label className="px-5 py-2.5 bg-white border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors text-sm text-gray-700 font-medium hover:border-blue-500">
-                📎 Seleccionar archivo
+              <label className="px-5 py-2 bg-white border rounded-lg cursor-pointer hover:bg-gray-50">
+                Seleccionar archivo
                 <input
                   type="file"
                   accept=".pdf"
-                  onChange={handleFileChange}
+                  onChange={(e) => cambiarCampo('archivo', e.target.files?.[0])}
                   className="hidden"
                 />
               </label>
               <span className="text-sm text-gray-500">
-                {formData.archivo ? `✓ ${formData.archivo.name}` : 'Ningún archivo seleccionado'}
+                {datos.archivo ? datos.archivo.name : 'nada seleccionado'}
               </span>
             </div>
           </div>
 
-          {/* Botones */}
-          <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 mt-8">
+          {/* BOTONES */}
+          <div className="flex justify-end gap-3 pt-6 border-t">
             <button
-              type="button"
-              onClick={handleCancel}
-              className="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+              onClick={() => window.location.reload()}
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
             >
               Cancelar
             </button>
             <button
-              type="submit"
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm"
+              onClick={guardar}
+              className="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
             >
               Guardar Solicitud
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

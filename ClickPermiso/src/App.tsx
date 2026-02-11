@@ -4,13 +4,11 @@ import FormularioSolicitud from './Componentes/FormularioSolicitud';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1">
-          <FormularioSolicitud />
-        </main>
+        <FormularioSolicitud />
       </div>
     </div>
   );
