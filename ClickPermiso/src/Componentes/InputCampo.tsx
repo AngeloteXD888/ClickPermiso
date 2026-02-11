@@ -3,35 +3,37 @@ import React, { useState } from 'react';
 const InputCampo = ({ label, type, name, value, onChange, regex, mensajeError }) => {
   const [error, setError] = useState(false);
 
-  // Al perder el foco, validamos con la regex
+  // Validación local al perder el foco (onBlur)
   const handleBlur = () => {
-    if (regex && value) {
-      setError(!regex.test(value));
+    if (regex) {
+      // .test() devuelve true si cumple la regex, false si falla
+      if (!regex.test(value)) {
+        setError(true);
+      } else {
+        setError(false);
+      }
     }
   };
 
-  // Al escribir, quitamos el aviso de error
+  // Al escribir, limpiamos el error para dar feedback positivo inmediato
   const handleChangeInternal = (e) => {
     setError(false);
-    onChange(e); 
+    onChange(e); // Propagamos el evento al padre
   };
 
   return (
-    <div className="flex flex-col gap-2 mb-4">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
+    <div className="grupo-input">
+      <label className="etiqueta">{label}</label>
       <input
         type={type}
         name={name}
         value={value}
         onChange={handleChangeInternal}
         onBlur={handleBlur}
-        className={`p-3 border rounded-xl outline-none transition-all ${
-          error 
-            ? 'border-red-500 bg-red-50 ring-2 ring-red-100' 
-            : 'border-gray-200 bg-gray-50 focus:ring-2 focus:ring-blue-100'
-        }`}
+        className={error ? 'input-error' : 'input-normal'}
       />
-      {error && <span className="text-xs text-red-600 font-medium">{mensajeError}</span>}
+      {/* Renderizado condicional del error */}
+      {error && <span className="mensaje-error">{mensajeError}</span>}
     </div>
   );
 };
