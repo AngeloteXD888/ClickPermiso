@@ -1,41 +1,65 @@
-import { useState } from 'react';
-import SolDiaDiurno from './pages/SolDiaDiurno';
-import SolDiaVespertino from './pages/SolDiaVespertino';
-import MiPerfil from './pages/MiPerfil';
-import MisDiasSolicitados from './pages/MisDiasSolicitados';
-import MisAusencias from './pages/MisAusencias';
-import Header from './Componentes/Header';
-import Sidebar from './Componentes/Sidebar';
+// src/App.jsx
+import { useEffect } from 'react'
+import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import Login from './Componentes/Login'
+import { ProtectedRoute } from './Componentes/ProtectedRoute'
 
-function App() {
-  const [activePage, setActivePage] = useState('sol-dia-diurno');
-
-  const renderPage = () => {
-    switch (activePage) {
-      case 'sol-dia-diurno':
-        return <SolDiaDiurno />;
-      case 'sol-dia-vespertino':
-        return <SolDiaVespertino />;
-      case 'mi-perfil':
-        return <MiPerfil />;
-      case 'mis-dias-solicitados':
-        return <MisDiasSolicitados />;
-      case 'mis-ausencias':
-        return <MisAusencias />;
-      default:
-        return <SolDiaDiurno />;
-    }
-  };
+// Una página simple que queremos proteger
+const Dashboard = () => {
+  const signOut = useAuthStore((state) => state.signOut)
+  
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    signOut()
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Header />
-      <div className="flex min-h-[calc(100vh-64px)]">
-        <Sidebar activePage={activePage} onPageChange={setActivePage} />
-        {renderPage()}
-      </div>
+    <div>
+      <h1>Bienvenido al Área Privada</h1>
+      <p>Solo puedes ver esto si estás logueado.</p>
+      <button onClick={handleLogout}>Cerrar Sesión</button>
     </div>
-  );
+  )
 }
 
-export default App;
+export default function App() {
+  const setSession = useAuthStore((state) => state.setSession)
+
+  useEffect(() => {
+    // 1. Obtener sesión inicial
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    // 2. Escuchar cambios (login, logout, token refresh) en tiempo real
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [setSession])
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Ruta Pública */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Rutas Protegidas */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Puedes agregar más rutas privadas aquí */}
+        </Route>
+        
+        {/* Redirección por defecto */}
+        <Route path="*" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}
+
+function useAuthStore(arg0: (state: any) => any) {
+  throw new Error('Function not implemented.')
+}
