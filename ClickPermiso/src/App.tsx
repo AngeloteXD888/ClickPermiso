@@ -1,65 +1,46 @@
-// src/App.jsx
-import { useEffect } from 'react'
-import { Routes, Route, BrowserRouter } from 'react-router-dom'
-import Login from './Componentes/Login'
-import { ProtectedRoute } from './Componentes/ProtectedRoute'
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ProtectedRoute } from './Componentes/ProtectedRoute';
+import Login from './Componentes/Login';
+import Layout from './Componentes/LayOut';
+import { useAuthStore } from './store/authStore.js';
+import SolDiaDiurno from './pages/SolDiaDiurno';
+import SolDiaVespertino from './pages/SolDiaVespertino';
+import MiPerfil from './pages/MiPerfil';
+import MisDiasSolicitados from './pages/MisDiasSolicitados';
+import MisAusencias from './pages/MisAusencias';
 
-// Una página simple que queremos proteger
-const Dashboard = () => {
-  const signOut = useAuthStore((state) => state.signOut)
-  
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    signOut()
-  }
-
-  return (
-    <div>
-      <h1>Bienvenido al Área Privada</h1>
-      <p>Solo puedes ver esto si estás logueado.</p>
-      <button onClick={handleLogout}>Cerrar Sesión</button>
-    </div>
-  )
-}
-
-export default function App() {
-  const setSession = useAuthStore((state) => state.setSession)
+function App() {
+  const initAuth = useAuthStore((state) => state.initAuth);
 
   useEffect(() => {
-    // 1. Obtener sesión inicial
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
-
-    // 2. Escuchar cambios (login, logout, token refresh) en tiempo real
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [setSession])
+    const cleanup = initAuth();
+    return cleanup;
+  }, [initAuth]);
 
   return (
     <BrowserRouter>
       <Routes>
-        {/* Ruta Pública */}
+        {/* Ruta pública */}
         <Route path="/login" element={<Login />} />
 
-        {/* Rutas Protegidas */}
+        {/* Rutas protegidas */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          {/* Puedes agregar más rutas privadas aquí */}
+          <Route element={<Layout />}>
+            <Route path="/" element={<Navigate to="/diurno" replace />} />
+            <Route path="/diurno"      element={<SolDiaDiurno />} />
+            <Route path="/vespertino"  element={<SolDiaVespertino />} />
+            <Route path="/solicitudes" element={<MisDiasSolicitados />} />
+            <Route path="/ausencias"   element={<MisAusencias />} />
+            <Route path="/perfil"      element={<MiPerfil />} />
+          </Route>
         </Route>
-        
-        {/* Redirección por defecto */}
-        <Route path="*" element={<Login />} />
+
+        {/* Ruta comodín */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-function useAuthStore(arg0: (state: any) => any) {
-  throw new Error('Function not implemented.')
-}
+export default App;

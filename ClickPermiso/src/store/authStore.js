@@ -6,16 +6,20 @@ export const useAuthStore = create(
     (set) => ({
       user: null,
       session: null,
-      // Función para actualizar sesión y usuario a la vez
-      setSession: (session) => set({ 
-        session: session, 
-        user: session?.user ?? null 
+      loading: false,          // ← lo usaba ProtectedRoute
+      setSession: (session) => set({
+        session: session,
+        user: session?.user ?? null,
       }),
-      // Limpiar el estado al cerrar sesión
       clearAuth: () => set({ user: null, session: null }),
+      // initAuth era llamado en App.tsx — ahora devuelve una función de cleanup vacía
+      initAuth: () => {
+        // Sin Supabase activo simplemente no hace nada
+        return () => {};
+      },
     }),
     {
-      name: 'auth-storage', // Nombre de la clave en LocalStorage
+      name: 'auth-storage',
     }
   )
 );

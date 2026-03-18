@@ -1,16 +1,14 @@
-// src/components/ProtectedRoute.jsx
-import { Navigate, Outlet } from 'react-router-dom'
-import { useAuthStore } from '../store/'
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
 
 export const ProtectedRoute = () => {
-  const { session, loading } = useAuthStore()
+  const { session, loading } = useAuthStore();
 
-  // 1. Si aún estamos verificando la sesión con Supabase, mostramos un loader
-  if (loading) return <div>Cargando autenticación...</div>
+  // Mientras se verifica la sesión mostramos un loader
+  if (loading) return <div className="flex items-center justify-center min-h-screen text-gray-500">Cargando...</div>;
 
-  // 2. Si no hay sesión, redirigimos al Login
-  if (!session) return <Navigate to="/login" replace />
+  // Sin sesión → login
+  if (!session) return <Navigate to="/login" replace />;
 
-  // 3. Si hay sesión, renderizamos el contenido de la ruta (Outlet)
-  return <Outlet />
-}
+  return <Outlet />;
+};
